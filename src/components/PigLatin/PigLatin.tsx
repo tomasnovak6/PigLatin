@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
 
+import Translate from './Translate';
+
 interface PigLatinProps {
 
 }
@@ -41,7 +43,10 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
     }
 
     onValueSubmit() {
-        this.getFirstChar();
+        // this.getFirstChar();
+        let translate = new Translate(this.state.inputValue);
+
+        console.log(translate.outputValue);
     }
 
     onValueReset() {

@@ -1,14 +1,13 @@
 class Translate {
 
     private inputValue: string = '';
-    private outputValue: string = '';
+    public outputValue: string = '';
 
     private consonants: string = 'bcdfghjklmnpqrstvwxyz';
     private vowels: string = 'aeiou';
 
-    constructor(inputValue: string, outputValue: string) {
+    constructor(inputValue: string) {
         this.inputValue = inputValue;
-        this.outputValue = outputValue;
 
         this.runTranslating();
     }
