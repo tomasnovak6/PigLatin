@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import logo from './logo.svg';
 import './App.css';
-import PigLatin from './components/PigLatin';
+import PigLatin from './components/PigLatin/PigLatin';
 
 class App extends React.Component {
 
