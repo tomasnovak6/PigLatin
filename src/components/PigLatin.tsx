@@ -22,6 +22,7 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
 
         this.onValueChange = this.onValueChange.bind(this);
         this.onValueSubmit = this.onValueSubmit.bind(this);
+        this.onValueReset = this.onValueReset.bind(this);
     }
 
     initialState() {
@@ -43,6 +44,10 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
         this.getFirstChar();
     }
 
+    onValueReset() {
+        this.setState(this.initialState());
+    }
+
     // hlavni metoda, ktera ten cely preklad spousti
     getFirstChar() {
         let inputValue = this.state.inputValue.toLowerCase();
@@ -54,6 +59,8 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
             } else if (this.getVowels().indexOf(firstChar) > -1) {
                 this.setVowel();
             }
+
+            this.setPunctuation();
         } else {
             this.setSameResult();
         }
@@ -109,9 +116,16 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
         return result;
     }
 
+    setPunctuation(): void {
+        let { inputValue } = this.state;
+        let result: string = '';
+
+        let punctuationPosition: number = inputValue.indexOf('\'');
+    }
+
     render() {
         let { inputValue, outputValue } = this.state;
-        
+
         return (
             <div className="container">
                 <div className="row">
@@ -119,9 +133,12 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
                 </div>
                 <div className="row">
                     <input type="text" onChange={(e) => this.onValueChange(e)} defaultValue={inputValue} />
-                    <input type="submit" onClick={this.onValueSubmit} value="Submit" />
                 </div>
-                <div className="row"><span className="font-weight-bold">Result:</span> {outputValue}</div>
+                <div className="row">
+                    <input type="submit" onClick={this.onValueSubmit} value="Submit" />
+                    <input type="button" onClick={this.onValueReset} value="Reset" />
+                </div>
+                <div className="row"><span className="font-weight-bold">Result on the translation:</span> {outputValue}</div>
             </div>
         );
     }
