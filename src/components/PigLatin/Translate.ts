@@ -57,7 +57,11 @@ class Translate {
 
     private translateSameResult(): void {
         this.setOutputValue(this.getInputValue());
+    }
 
+    private setPunctuation(): void {
+        let result: string = '';
+        let punctuationPosition: number = this.getInputValue().indexOf('\'');
     }
 
     private runTranslating(): string {
