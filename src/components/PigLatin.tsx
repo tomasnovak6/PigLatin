@@ -40,43 +40,78 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
     }
 
     onValueSubmit() {
-        console.log('submit');
+        this.getFirstChar();
     }
 
+    // hlavni metoda, ktera ten cely preklad spousti
     getFirstChar() {
-        let { inputValue } = this.state;
+        let inputValue = this.state.inputValue.toLowerCase();
         let firstChar = inputValue.substr(0, 1);
 
-        if (this.getConsonants().indexOf(firstChar) > -1) {
-            this.setConsonant();
-        } else if (this.getVowels().indexOf(firstChar) > -1) {
-            this.setVowel();
+        if (this.shouldBeChanged()) {
+            if (this.getConsonants().indexOf(firstChar) > -1) {
+                this.setConsonant();
+            } else if (this.getVowels().indexOf(firstChar) > -1) {
+                this.setVowel();
+            }
         } else {
-            console.log('neni to nic z toho');
+            this.setSameResult();
         }
     }
 
+    // getter pro souhlasky
     getConsonants(): string {
         return this.consonants;
     }
 
+    // getter pro samohlasky
     getVowels(): string {
         return this.vowels;
     }
 
-    setConsonant() {
+    // setter pro souhlasky
+    setConsonant(): void {
+        let { inputValue } = this.state;
+        let result: string = '';
+        result = inputValue.substr(1, inputValue.length) + inputValue.substr(0, 1) + 'ay';
+        result = result.charAt(0).toUpperCase() + result.slice(1);
 
+        this.setState({
+            outputValue: result,
+        });
     }
 
-    setVowel() {
+    // setter pro samohlasky
+    setVowel(): void {
+        let { inputValue } = this.state;
+        let result: string = '';
+        result = inputValue + 'way';
 
+        this.setState({
+            outputValue: result,
+        });
+    }
+
+    setSameResult(): void {
+        this.setState({
+            outputValue: this.state.inputValue,
+        });
+    }
+
+    shouldBeChanged(): boolean {
+        let result: boolean = true;
+        let { inputValue } = this.state;
+
+        if (inputValue.endsWith('way')) {
+            result = false;
+        }
+
+        return result;
     }
 
     render() {
         let { inputValue, outputValue } = this.state;
-
-        console.log('state', this.state);
-
+        
         return (
             <div className="container">
                 <div className="row">
