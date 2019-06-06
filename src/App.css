@@ -1,0 +1,31 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 1.5vmin);
+}
+.App-header h1 {
+  color: #ffffff;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.App-content, .App-footer {
+  margin-top: 30px;
+}
+
+.error {
+  color: #ff0000;
+  font-size: 1em;
+  min-height: 1em;
+  padding: 10px 0;
+}
