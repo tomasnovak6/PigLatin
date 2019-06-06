@@ -1,23 +1,21 @@
 class Translate {
 
     private inputValue: string = '';
-    public outputValue: string = '';
+    private outputValue: string = '';
 
     private consonants: string = 'bcdfghjklmnpqrstvwxyz';
     private vowels: string = 'aeiou';
 
     constructor(inputValue: string) {
         this.inputValue = inputValue;
-
-        this.runTranslating();
     }
 
     private getInputValue(): string {
         return this.inputValue;
     }
 
-    private getOutputValue(): string {
-        return this.inputValue;
+    public getOutputValue(): string {
+        return this.outputValue;
     }
 
     private setOutputValue(inputValue: string): void {
@@ -59,14 +57,23 @@ class Translate {
         this.setOutputValue(this.getInputValue());
     }
 
-    private setPunctuation(): void {
+    private translatePunctuation(): void {
         let result: string = '';
         let punctuationPosition: number = this.getInputValue().indexOf('\'');
     }
 
-    private runTranslating(): string {
+    private translateHyphens(): void {
+
+    }
+
+    private translateCapitalization(): void {
+
+    }
+
+    public runTranslating(): string {
         let inputValue: string = this.getInputValue().toLowerCase();
         let firstChar: string = inputValue.substr(0, 1);
+        let result: string = '';
 
         if (this.shouldBeChanged()) {
             if (this.getConsonants().indexOf(firstChar) > -1) {

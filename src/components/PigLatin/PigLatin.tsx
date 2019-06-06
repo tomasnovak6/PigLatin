@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
 
+import { Button, Input } from 'antd';
+
 import Translate from './Translate';
 
 interface PigLatinProps {
@@ -10,6 +12,7 @@ interface PigLatinProps {
 interface PigLatinState {
     inputValue: string;
     outputValue: string;
+    errors: string[];
 }
 
 class PigLatin extends Component<PigLatinProps, PigLatinState> {
@@ -28,6 +31,7 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
         return {
             inputValue: '',
             outputValue: '',
+            errors: [],
         };
     }
 
@@ -37,15 +41,44 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
         this.setState({
             inputValue: value,
         });
+        this.validateInput(value);
+    }
+
+    validateInput(value: string = ''): boolean {
+        let result: boolean = true;
+        let errors: string[] = [];
+        let inputValue: string;
+        if (!value) {
+            inputValue = this.state.inputValue;
+        } else {
+            inputValue = value;
+        }
+
+        if (!inputValue) {
+            errors.push('Please enter the input value.');
+        }
+        if (inputValue !== null && inputValue.length > 50) {
+            errors.push('The maximum length is 50 characters.');
+        }
+        if (errors.length > 0) {
+            result = false;
+        }
+
+        this.setState({
+            errors: errors,
+        });
+
+        return result;
     }
 
     onValueSubmit() {
-        let translate = new Translate(this.state.inputValue);
+        let translate: string = new Translate(this.state.inputValue).runTranslating();
 
-        // tady jeste pridat validaci
-        this.setState({
-            outputValue: translate.outputValue,
-        });
+        if (this.validateInput()) {
+            this.setState({
+                outputValue: translate,
+            });
+        }
     }
 
     onValueReset() {
@@ -58,16 +91,17 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
         return (
             <div className="container">
                 <div className="row">
-                    <h1>Pig-Latin Component</h1>
+                    <h2>Pig-Latin Task</h2>
                 </div>
                 <div className="row">
-                    <input type="text" onChange={(e) => this.onValueChange(e)} defaultValue={inputValue} />
+                    <Input placeholder="Input value" size="large" onChange={(e) => this.onValueChange(e)} value={inputValue} />
+                    <p className="error">{this.state.errors}</p>
                 </div>
                 <div className="row">
-                    <input type="submit" onClick={this.onValueSubmit} value="Submit" />
-                    <input type="button" onClick={this.onValueReset} value="Reset" />
+                    <Button type="primary" onClick={this.onValueSubmit}>Translate</Button>
+                    <Button type="default" onClick={this.onValueReset}>Reset</Button>
                 </div>
-                <div className="row"><span className="font-weight-bold">Result on the translation:</span> {outputValue}</div>
+                <div className="row"><span className="font-weight-bold">Result of the translation:</span> {outputValue}</div>
             </div>
         );
     }
