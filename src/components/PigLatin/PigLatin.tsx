@@ -5,10 +5,7 @@ import { Button, Input } from 'antd';
 
 import Translate from './Translate';
 
-interface PigLatinProps {
-
-}
-
+interface PigLatinProps {}
 interface PigLatinState {
     inputValue: string;
     outputValue: string;
@@ -94,14 +91,19 @@ class PigLatin extends Component<PigLatinProps, PigLatinState> {
                     <h2>Pig-Latin Task</h2>
                 </div>
                 <div className="row">
-                    <Input placeholder="Input value" size="large" onChange={(e) => this.onValueChange(e)} value={inputValue} />
-                    <p className="error">{this.state.errors}</p>
+                    <Input placeholder="Input value" size="large" className="input-value" onChange={(e) => this.onValueChange(e)} value={inputValue} />
+                </div>
+                <div className="row error">
+                    <span>{this.state.errors}</span>
                 </div>
                 <div className="row">
                     <Button type="primary" onClick={this.onValueSubmit}>Translate</Button>
                     <Button type="default" onClick={this.onValueReset}>Reset</Button>
                 </div>
-                <div className="row"><span className="font-weight-bold">Result of the translation:</span> {outputValue}</div>
+                <div className="row result">
+                    <h3>Result of the translation:</h3>
+                    <span>{outputValue}</span>
+                </div>
             </div>
         );
     }
