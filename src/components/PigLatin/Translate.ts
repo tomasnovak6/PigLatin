@@ -63,7 +63,19 @@ class Translate {
     }
 
     private translateHyphens(): void {
+        let resultArr: string[] = [];
 
+        if (this.getInputValue().indexOf('-') > -1) {
+            resultArr = this.getInputValue().split('-');
+
+            if (resultArr.length > 0) {
+                for (let i in resultArr) {
+
+                }
+            }
+        }
+
+        console.log('resultArr', resultArr);
     }
 
     private translateCapitalization(): void {
@@ -75,13 +87,19 @@ class Translate {
         let firstChar: string = inputValue.substr(0, 1);
         let result: string = '';
 
+
         if (this.shouldBeChanged()) {
             if (this.getConsonants().indexOf(firstChar) > -1) {
                 this.translateForConsonant();
             } else if (this.getVowels().indexOf(firstChar) > -1) {
                 this.traslateForVowel();
             }
-            // this.translatePunctuation();
+            // zkontroluje interpunkci
+            this.translatePunctuation();
+
+            // zkontroluje, ze tam neni vice slov oddelenych pomlckou
+            this.translateHyphens();
+
         } else {
             this.translateSameResult();
         }
