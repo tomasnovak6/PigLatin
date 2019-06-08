@@ -8,7 +8,8 @@ class Translate {
     private consonants: string = 'bcdfghjklmnpqrstvwxyz';
     private vowels: string = 'aeiou';
 
-    private punctationInput: string[] = [];
+    private punctationInput: string[][] = [[],[]];
+    private punctationChars: string[] = ['.', '\''];
     private capitalizationInput: string[] = [];
 
     constructor(inputValue: string) {
@@ -30,26 +31,28 @@ class Translate {
         });
     }
 
-    private setPunctationInput(inputValueArr: string[], punctation: string): void {
+    private setPunctationInput(inputValueArr: string[], punctation: number): void {
         inputValueArr.forEach((item, i) => {
-            this.punctationInput[i] = '';
+            this.punctationInput[punctation][i] = '';
             for (let j = 0; j < this.getInputValueItem(i).length; j++) {
-                if (this.getInputValueItem(i).charAt(j) === punctation) {
-                    this.punctationInput[i] += '1';
+                if (this.getInputValueItem(i).charAt(j) === this.punctationChars[punctation]) {
+                    this.punctationInput[punctation][i] += '1';
                 } else {
-                    this.punctationInput[i] += '0';
+                    this.punctationInput[punctation][i] += '0';
                 }
             }
-            this.setInputValueItemNoPunctation(inputValueArr[i], i, punctation);
+            this.setInputValueItemNoPunctation(inputValueArr[i], i, this.punctationChars[punctation]);
         });
+
+        console.log('punctationInput', this.punctationInput)
     }
 
     private getCapitalizationInput(i: number) {
         return this.capitalizationInput[i];
     }
 
-    private getPuncationInput(i: number) {
-        return this.punctationInput[i];
+    private getPuncationInput(punctation: number, i: number) {
+        return this.punctationInput[punctation][i];
     }
 
     private getInputValue(): string {
@@ -145,11 +148,16 @@ class Translate {
         this.setOutputValueItem(result, i);
     }
 
-    private translatePunctuation(i: number, punctation: string): void {
+    private translatePunctuation(i: number, punctation: number): void {
         let result: string = this.getOutputValueItem(i);
-        for (let j = 0; j < this.getPuncationInput(i).length; j++) {
-            if (this.getPuncationInput(i).charAt(j) === '1') {
-                result = result.slice(0, j) + punctation + result.slice(j);
+        let inputLength: number = this.getPuncationInput(punctation, i).length;
+        let outputLength: number = this.getOutputValueItem(i).length;
+        let positionFromEnd: number = 0;
+
+        for (let j = 0; j < inputLength; j++) {
+            if (this.getPuncationInput(punctation, i).charAt(j) === '1') {
+                positionFromEnd = outputLength - inputLength + j + 1;
+                result = result.slice(0, positionFromEnd) + this.punctationChars[punctation] + result.slice(positionFromEnd);
             }
         }
 
@@ -170,8 +178,8 @@ class Translate {
 
             // data initialization for translate methods
             this.setInputValueArr(inputValueArr);
-            this.setPunctationInput(inputValueArr, '.');
-            this.setPunctationInput(inputValueArr, '\'');
+            this.setPunctationInput(inputValueArr, 0);
+            this.setPunctationInput(inputValueArr, 1);
             this.setCapitalizationInput(inputValueArr);
 
             if (inputValueArr.length > 0) {
@@ -189,7 +197,8 @@ class Translate {
             inputValueArr[0] = this.getInputValue();
             this.setInputValueArr(inputValueArr);
 
-            this.setPunctationInput(inputValueArr, '.');
+            this.setPunctationInput(inputValueArr, 0);
+            this.setPunctationInput(inputValueArr, 1);
             this.setCapitalizationInput(inputValueArr);
 
             firstChar = this.getInputValueItem(0).substr(0, 1);
@@ -211,8 +220,8 @@ class Translate {
             }
 
             // validates punctation
-            this.translatePunctuation(i, '.');
-            this.translatePunctuation(i, '\'');
+            this.translatePunctuation(i, 0);
+            this.translatePunctuation(i, 1);
 
             // validates the small and big letter
             this.translateCapitalization(i);
