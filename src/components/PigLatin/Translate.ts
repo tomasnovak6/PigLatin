@@ -8,49 +8,48 @@ class Translate {
     private consonants: string = 'bcdfghjklmnpqrstvwxyz';
     private vowels: string = 'aeiou';
 
-    private punctuationInput: boolean[][] = [[],[]];
-    private capitalizationInput: boolean[][] = [[],[]];
+    private punctationInput: string[] = [];
+    private capitalizationInput: string[] = [];
 
     constructor(inputValue: string) {
         this.inputValue = inputValue;
     }
 
-    private setPunctationInput(inputValueArr: string[]): void {
-        let testedChar: string = '.';
-
-        // apostrof
-
-        // tecka
-        inputValueArr.forEach((item, i) => {
-            for (let j = 0; j < this.getInputValueItem(i).length; j++) {
-                if (this.getInputValueItem(i).charAt(j) === testedChar) {
-                    this.punctuationInput[i][j] = true;
-                } else {
-                    this.punctuationInput[i][j] = false;
-                }
-            }
-        });
-
-        console.log('punctationInput', this.punctuationInput);
-    }
-
     private setCapitalizationInput(inputValueArr: string[]): void {
         inputValueArr.forEach((item, i) => {
+            this.capitalizationInput[i] = '';
             for (let j = 0; j < this.getInputValueItem(i).length; j++) {
                 let c: string = this.getInputValueItem(i).charAt(j);
                 if (c === c.toUpperCase()) {
-                    this.capitalizationInput[i][j] = true;
-
+                    this.capitalizationInput[i] += '1';
                 } else if (c === c.toLowerCase()) {
-                    this.capitalizationInput[i][j] = false;
+                    this.capitalizationInput[i] += '0';
                 }
             }
-            this.setInputValueItem(inputValueArr[i], i);
+            this.setInputValueItemLower(inputValueArr[i], i);
+        });
+    }
+
+    private setPunctationInput(inputValueArr: string[], punctation: string): void {
+        inputValueArr.forEach((item, i) => {
+            this.punctationInput[i] = '';
+            for (let j = 0; j < this.getInputValueItem(i).length; j++) {
+                if (this.getInputValueItem(i).charAt(j) === punctation) {
+                    this.punctationInput[i] += '1';
+                } else {
+                    this.punctationInput[i] += '0';
+                }
+            }
+            this.setInputValueItemNoPunctation(inputValueArr[i], i, punctation);
         });
     }
 
     private getCapitalizationInput(i: number) {
         return this.capitalizationInput[i];
+    }
+
+    private getPuncationInput(i: number) {
+        return this.punctationInput[i];
     }
 
     private getInputValue(): string {
@@ -87,8 +86,12 @@ class Translate {
         this.inputValueArr = inputValueArr;
     }
 
-    private setInputValueItem(inputValueArr: string, i: number): void {
+    private setInputValueItemLower(inputValueArr: string, i: number): void {
         this.inputValueArr[i] = inputValueArr.toLowerCase();
+    }
+
+    private setInputValueItemNoPunctation(inputValueArr: string, i: number, punctation: string): void {
+        this.inputValueArr[i] = inputValueArr.split(punctation).join('');
     }
 
     private setOutputValueItem(inputValue: string, i: number): void {
@@ -129,54 +132,65 @@ class Translate {
         this.setOutputValueItem(this.getInputValueItem(i), i);
     }
 
-    private translatePunctuation(i: number): void {
-        let result: string = '';
-        let punctuationPosition: number = this.getInputValueItem(i).indexOf('\'');
-    }
-
     private translateCapitalization(i: number): void {
         let result: string = this.getOutputValueItem(i);
-        this.getCapitalizationInput(i).forEach((item, j) => {
-            if (item === true) {
+        for (let j = 0; j < this.getCapitalizationInput(i).length; j++) {
+            if (this.getCapitalizationInput(i).charAt(j) === '1') {
                 result = result.slice(0, j) + result.charAt(j).toUpperCase() + result.slice(j+1);
             } else {
                 result = result.slice(0, j) + result.charAt(j).toLowerCase() + result.slice(j+1);
             }
-        });
+        }
 
         this.setOutputValueItem(result, i);
     }
 
+    private translatePunctuation(i: number, punctation: string): void {
+        let result: string = this.getOutputValueItem(i);
+        for (let j = 0; j < this.getPuncationInput(i).length; j++) {
+            if (this.getPuncationInput(i).charAt(j) === '1') {
+                result = result.slice(0, j) + punctation + result.slice(j);
+            }
+        }
+
+        this.setOutputValueItem(result, i);
+    }
+
+    /**
+     * Main method for translation.
+     */
     public runTranslating(): string {
         let inputValueArr: string[] = [];
         let firstChar: string = '';
 
-        // pokud je to spojene z vice slov
+        // if should be translate more words
         if (this.getInputValue().indexOf('-') > -1) {
             // pocatecni inicializace vstupnich promennych
             inputValueArr = this.getInputValue().split('-');
-            // s timto se pracuje dale v prekladovych metodach
-            this.setInputValueArr(inputValueArr);
 
+            // data initialization for translate methods
+            this.setInputValueArr(inputValueArr);
+            this.setPunctationInput(inputValueArr, '.');
+            this.setPunctationInput(inputValueArr, '\'');
             this.setCapitalizationInput(inputValueArr);
-            this.setPunctationInput(inputValueArr);
 
             if (inputValueArr.length > 0) {
                 inputValueArr.forEach((item, i) => {
                     firstChar = this.getInputValueItem(i).substr(0, 1);
 
-                    // tady zacinam prekladat
+                    // here is the beggining of translating
                     this.translateParticularWords(firstChar, i);
                 });
             }
 
-        // pokud prekladam jen 1 slovo
+
+        // if should be translated just one word
         } else {
             inputValueArr[0] = this.getInputValue();
             this.setInputValueArr(inputValueArr);
 
+            this.setPunctationInput(inputValueArr, '.');
             this.setCapitalizationInput(inputValueArr);
-            this.setPunctationInput(inputValueArr);
 
             firstChar = this.getInputValueItem(0).substr(0, 1);
 
@@ -195,10 +209,13 @@ class Translate {
             } else if (this.getVowels().indexOf(firstChar) > -1) {
                 this.traslateForVowel(i);
             }
-            // zkontroluje velka a mala pismena
+
+            // validates punctation
+            this.translatePunctuation(i, '.');
+            this.translatePunctuation(i, '\'');
+
+            // validates the small and big letter
             this.translateCapitalization(i);
-            // zkontroluje interpunkci
-            // this.translatePunctuation(i);
         } else {
             this.translateSameResult(i);
         }
