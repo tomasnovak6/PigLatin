@@ -179,11 +179,12 @@ class Translate {
     public runTranslating(): string {
         let inputValueArr: string[] = [];
         let firstChar: string = '';
-
+        
         // if should be translate more words
         if (this.getInputValue().indexOf('-') > -1) {
             // pocatecni inicializace vstupnich promennych
             inputValueArr = this.getInputValue().split('-');
+            this.setInputValueArr(inputValueArr);
 
             // data initialization for translate methods
             this.setPunctation(inputValueArr);
