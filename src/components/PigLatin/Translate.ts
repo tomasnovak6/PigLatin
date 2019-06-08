@@ -1,3 +1,5 @@
+import {instanceOf} from "prop-types";
+
 class Translate {
 
     private inputValue: string = '';
@@ -179,43 +181,48 @@ class Translate {
     public runTranslating(): string {
         let inputValueArr: string[] = [];
         let firstChar: string = '';
-        
-        // if should be translate more words
-        if (this.getInputValue().indexOf('-') > -1) {
-            // pocatecni inicializace vstupnich promennych
-            inputValueArr = this.getInputValue().split('-');
-            this.setInputValueArr(inputValueArr);
 
-            // data initialization for translate methods
-            this.setPunctation(inputValueArr);
-            this.setCapitalizationInput(inputValueArr);
+        try {
+            // if should be translate more words
+            if (this.getInputValue().indexOf('-') > -1) {
+                // pocatecni inicializace vstupnich promennych
+                inputValueArr = this.getInputValue().split('-');
+                this.setInputValueArr(inputValueArr);
 
-            if (inputValueArr.length > 0) {
-                inputValueArr.forEach((item, i) => {
-                    firstChar = this.getInputValueItem(i).substr(0, 1);
+                // data initialization for translate methods
+                this.setPunctation(inputValueArr);
+                this.setCapitalizationInput(inputValueArr);
 
-                    // here is the beggining of translating
-                    this.translateParticularWords(firstChar, i);
-                });
+                if (inputValueArr.length > 0) {
+                    inputValueArr.forEach((item, i) => {
+                        firstChar = this.getInputValueItem(i).substr(0, 1);
+
+                        // here is the beggining of translating
+                        this.translateParticularWords(firstChar, i);
+                    });
+                }
+
+
+                // if should be translated just one word
+            } else {
+                inputValueArr[0] = this.getInputValue();
+                this.setInputValueArr(inputValueArr);
+
+                this.setPunctation(inputValueArr);
+                this.setCapitalizationInput(inputValueArr);
+
+                firstChar = this.getInputValueItem(0).substr(0, 1);
+
+                this.translateParticularWords(firstChar, 0);
             }
 
+            this.setOutputValue();
 
-        // if should be translated just one word
-        } else {
-            inputValueArr[0] = this.getInputValue();
-            this.setInputValueArr(inputValueArr);
-
-            this.setPunctation(inputValueArr);
-            this.setCapitalizationInput(inputValueArr);
-
-            firstChar = this.getInputValueItem(0).substr(0, 1);
-
-            this.translateParticularWords(firstChar, 0);
+            return this.getOutputValue();
+        } catch (e) {
+            let error: string = 'Error: ' + e;
+            return error;
         }
-
-        this.setOutputValue();
-
-        return this.getOutputValue();
     }
 
     private translateParticularWords(firstChar: string, i: number): void {
