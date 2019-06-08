@@ -15,10 +15,23 @@ class Translate {
         this.inputValue = inputValue;
     }
 
-    private setPunctationInput(): void {
+    private setPunctationInput(inputValueArr: string[]): void {
+        let testedChar: string = '.';
+
         // apostrof
 
         // tecka
+        inputValueArr.forEach((item, i) => {
+            for (let j = 0; j < this.getInputValueItem(i).length; j++) {
+                if (this.getInputValueItem(i).indexOf(testedChar)) {
+                    this.punctuationInput[i][j] = true;
+                } else {
+                    this.punctuationInput[i][j] = false;
+                }
+            }
+        });
+
+        console.log('punctationInput', this.punctuationInput);
     }
 
     private setCapitalizationInput(inputValueArr: string[]): void {
@@ -135,6 +148,7 @@ class Translate {
 
     public runTranslating(): string {
         let inputValueArr: string[] = [];
+        let firstChar: string = '';
 
         // pokud je to spojene z vice slov
         if (this.getInputValue().indexOf('-') > -1) {
@@ -142,13 +156,13 @@ class Translate {
             inputValueArr = this.getInputValue().split('-');
             // s timto se pracuje dale v prekladovych metodach
             this.setInputValueArr(inputValueArr);
-            console.log('inputValueArr', inputValueArr);
+
             this.setCapitalizationInput(inputValueArr);
+            this.setPunctationInput(inputValueArr);
 
             if (inputValueArr.length > 0) {
                 inputValueArr.forEach((item, i) => {
-                    let inputValue: string = this.getInputValueItem(i).toLowerCase();
-                    let firstChar: string = this.getInputValueItem(i).substr(0, 1);
+                    firstChar = this.getInputValueItem(i).substr(0, 1);
 
                     // tady zacinam prekladat
                     this.translateParticularWords(firstChar, i);
@@ -159,10 +173,11 @@ class Translate {
         } else {
             inputValueArr[0] = this.getInputValue();
             this.setInputValueArr(inputValueArr);
-            console.log('inputValueArr', inputValueArr);
-            this.setCapitalizationInput(inputValueArr);
 
-            let firstChar: string = this.getInputValueItem(0).substr(0, 1);
+            this.setCapitalizationInput(inputValueArr);
+            this.setPunctationInput(inputValueArr);
+
+            firstChar = this.getInputValueItem(0).substr(0, 1);
 
             this.translateParticularWords(firstChar, 0);
         }
@@ -179,10 +194,10 @@ class Translate {
             } else if (this.getVowels().indexOf(firstChar) > -1) {
                 this.traslateForVowel(i);
             }
-            // zkontroluje interpunkci
-            // this.translatePunctuation(i);
             // zkontroluje velka a mala pismena
             this.translateCapitalization(i);
+            // zkontroluje interpunkci
+            // this.translatePunctuation(i);
         } else {
             this.translateSameResult(i);
         }
