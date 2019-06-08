@@ -43,7 +43,7 @@ class Translate {
         inputValueArr.forEach((item, i) => {
             this.punctationInput[punctation][i] = '';
             for (let j = 0; j < this.getInputValueItem(i).length; j++) {
-                if (this.getInputValueItem(i).charAt(j) === this.punctationChars[punctation]) {
+                if (item.charAt(j) === this.punctationChars[punctation]) {
                     this.punctationInput[punctation][i] += '1';
                 } else {
                     this.punctationInput[punctation][i] += '0';
