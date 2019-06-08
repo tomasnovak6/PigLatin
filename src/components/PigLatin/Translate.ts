@@ -8,7 +8,7 @@ class Translate {
     private consonants: string = 'bcdfghjklmnpqrstvwxyz';
     private vowels: string = 'aeiou';
 
-    private punctuationInput: boolean[][] = [[], []];
+    private punctuationInput: boolean[][] = [[],[]];
     private capitalizationInput: boolean[][] = [[],[]];
 
     constructor(inputValue: string) {
@@ -23,7 +23,7 @@ class Translate {
         // tecka
         inputValueArr.forEach((item, i) => {
             for (let j = 0; j < this.getInputValueItem(i).length; j++) {
-                if (this.getInputValueItem(i).indexOf(testedChar)) {
+                if (this.getInputValueItem(i).charAt(j) === testedChar) {
                     this.punctuationInput[i][j] = true;
                 } else {
                     this.punctuationInput[i][j] = false;
@@ -40,6 +40,7 @@ class Translate {
                 let c: string = this.getInputValueItem(i).charAt(j);
                 if (c === c.toUpperCase()) {
                     this.capitalizationInput[i][j] = true;
+
                 } else if (c === c.toLowerCase()) {
                     this.capitalizationInput[i][j] = false;
                 }
