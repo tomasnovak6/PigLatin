@@ -31,6 +31,14 @@ class Translate {
         });
     }
 
+    private setPunctation(inputValueArr: string[]): void {
+        inputValueArr.forEach((item, i) => {
+            this.setPunctationInput(inputValueArr, 0);
+            this.setPunctationInput(inputValueArr, 1);
+            this.setInputValueItemNoPunctation(inputValueArr);
+        });
+    }
+
     private setPunctationInput(inputValueArr: string[], punctation: number): void {
         inputValueArr.forEach((item, i) => {
             this.punctationInput[punctation][i] = '';
@@ -41,10 +49,15 @@ class Translate {
                     this.punctationInput[punctation][i] += '0';
                 }
             }
-            this.setInputValueItemNoPunctation(inputValueArr[i], i, this.punctationChars[punctation]);
         });
+    }
 
-        console.log('punctationInput', this.punctationInput)
+    private setInputValueItemNoPunctation(inputValueArr: string[]): void {
+        inputValueArr.forEach((item, i) => {
+            for (let j = 0; j < this.punctationChars.length; j++) {
+                this.inputValueArr[i] = inputValueArr[i].split(this.punctationChars[j]).join('');
+            }
+        });
     }
 
     private getCapitalizationInput(i: number) {
@@ -91,10 +104,6 @@ class Translate {
 
     private setInputValueItemLower(inputValueArr: string, i: number): void {
         this.inputValueArr[i] = inputValueArr.toLowerCase();
-    }
-
-    private setInputValueItemNoPunctation(inputValueArr: string, i: number, punctation: string): void {
-        this.inputValueArr[i] = inputValueArr.split(punctation).join('');
     }
 
     private setOutputValueItem(inputValue: string, i: number): void {
@@ -177,9 +186,7 @@ class Translate {
             inputValueArr = this.getInputValue().split('-');
 
             // data initialization for translate methods
-            this.setInputValueArr(inputValueArr);
-            this.setPunctationInput(inputValueArr, 0);
-            this.setPunctationInput(inputValueArr, 1);
+            this.setPunctation(inputValueArr);
             this.setCapitalizationInput(inputValueArr);
 
             if (inputValueArr.length > 0) {
@@ -197,8 +204,7 @@ class Translate {
             inputValueArr[0] = this.getInputValue();
             this.setInputValueArr(inputValueArr);
 
-            this.setPunctationInput(inputValueArr, 0);
-            this.setPunctationInput(inputValueArr, 1);
+            this.setPunctation(inputValueArr);
             this.setCapitalizationInput(inputValueArr);
 
             firstChar = this.getInputValueItem(0).substr(0, 1);
