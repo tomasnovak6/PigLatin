@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import {instanceOf} from "prop-types";
 
 class Translate {

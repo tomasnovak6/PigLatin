@@ -11,7 +11,7 @@ class App extends React.Component {
           <div className="App">
               <div className="container-fluid">
                   <header className="App-header">
-                      <h1>Front-End Task for Sapho (Citrix)</h1>
+                      <h1>Front-End Task</h1>
                   </header>
                   <section className="App-content">
                       <PigLatin />

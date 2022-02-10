@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 
+// @ts-ignore
 import { Button, Input } from 'antd';
 
 import Translate from './Translate';
